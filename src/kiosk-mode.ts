@@ -83,12 +83,21 @@ class KioskMode implements KioskModeRunner {
 				HA_SIDEBAR
 			} = this.HAElements;
 
-			this.ha = await HOME_ASSISTANT.element as HomeAssistant;
-			this.main = await HOME_ASSISTANT_MAIN.selector.$.element;
-			this.huiRoot = await HUI_ROOT.selector.$.element;
-			this.drawerLayout = await HA_DRAWER.element as HaSidebar;
-			this.appToolbar = await HEADER.selector.query(ELEMENT.TOOLBAR).element;
-			this.sideBarRoot = await HA_SIDEBAR.selector.$.element;
+			[
+			  this.ha,
+			  this.main,
+			  this.huiRoot,
+			  this.drawerLayout,
+			  this.appToolbar,
+			  this.sideBarRoot
+			] = await Promise.all([
+			  HOME_ASSISTANT.element as Promise<HomeAssistant>,
+			  HOME_ASSISTANT_MAIN.selector.$.element,
+			  HUI_ROOT.selector.$.element,
+			  HA_DRAWER.element as Promise<HaSidebar>,
+			  HEADER.selector.query(ELEMENT.TOOLBAR).element,
+			  HA_SIDEBAR.selector.$.element
+			]);
 
 			this.user = await getPromisableResult(
 				(): User => this.ha?.hass?.user,
